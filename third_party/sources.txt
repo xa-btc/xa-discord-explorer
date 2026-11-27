@@ -1,0 +1,7 @@
+SQLite 3.50.4 (public domain)
+https://www.sqlite.org/2025/sqlite-amalgamation-3500400.zip
+ZIP SHA256: 1d3049dd0f830a025a53105fc79fd2ab9431aea99e137809d064d8ee8356b032
+
+nlohmann/json 3.12.0 (MIT)
+https://raw.githubusercontent.com/nlohmann/json/v3.12.0/single_include/nlohmann/json.hpp
+Header SHA256: aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63

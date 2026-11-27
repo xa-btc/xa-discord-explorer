@@ -1,0 +1,235 @@
+2026-11-26 - XA Discord Explorer
+- Rename the application and executable to XA Discord Explorer.
+
+2026-11-21 - Server audit log
+- Add an Audit Log tab that uses connected Discord accounts and lists servers based on View Audit Log access.
+- Search Discord directly for checked audit actions, including pins and unpins, and merge their results newest first. Checkbox changes filter the current rows immediately and reuse a complete scan when it covers the new selection.
+- Show who performed each action and open direct Discord links for pinned and unpinned messages.
+- Show the original author and message text in pin and unpin rows, with a full preview below the table, text and author search, and a Copy message link button.
+- Show the affected member or role for member and channel permission updates. List role additions, removals and permission changes in the searchable Message text column.
+- Display each page as it arrives and keep partial results when a scan is cancelled or interrupted.
+
+2026-11-07 - Preserve live capture channel colors
+- Keep the channel list enabled during live capture so Windows retains its dark background and readable text; retain the existing checkbox-change guard to keep the monitored channel set fixed.
+
+2026-11-07 - Live channel capture
+- Add Live capture / Stop capture for the checked server channels and threads, with automatic saved-message display updates and five-second polling between passes.
+- Catch up from the newest saved message using forward pagination; channels without saved messages start at live-session start. Resume partial catch-up safely after request failures.
+- Reuse attachment settings and rate-limit handling; retry incomplete passes after 30 seconds and stop on expired sessions, cancellation or app close. Keep manual date/deletion settings unchanged.
+- Release executable staged in build/staged-live-capture. All four native suites passed, including repeated live-worker/UI refresh, clean stop and forward-page recovery; running executable unchanged and live Discord verification pending.
+
+2026-11-07 - View Channels collection dates
+- Allow a blank From date with Check since to resume at each channel's newest saved message, or collect all history when none is saved.
+- Explicit dates scan from midnight UTC on that day onward; Check since no longer skips the requested range.
+- Require a From date before channel deletion checks, including author-filtered scans; keep DM date behavior unchanged.
+- Release build staged in build/staged-check-since; all four native test suites passed. Running application left unchanged; live Discord verification remains pending.
+
+2026-10-28 - Parse forwarded messages in channels and DMs
+- Parse forwarded snapshots for saved-message display/search, suggestion detection, details and TXT exports; retain raw snapshots and add parsed_content to JSON exports.
+- Download forwarded attachments with existing type/size filters and reuse, preserving the receiving message's sender, date, channel and deletion identity.
+- Automatically index previously saved forwards without changing review/deletion flags or checkpoints; label unavailable or truncated snapshot content.
+- Release executable rebuilt; all four native suites passed, including forwarded-message history/search collection in channels and DMs, cached reindexing, attachment reuse, UI details, exports and context navigation. Live Discord forwarded-message capture remains to be verified.
+
+2026-10-28 - Retry locked backup-folder finalization
+- Retry access-denied errors when finalizing a verified source backup, with eight bounded attempts and visible retry messages; preserve the partial folder and refuse compilation if access remains denied.
+- Keep existing completed backups intact. Thirteen build-helper checks passed, with one Windows symlink-privilege check skipped; no native rebuild was needed for this script fix.
+- Recovery copies: build_support/backups/backup - 2026-10-28_07-42-23.py and tests/backups/test_build_support - 2026-10-28_07-42-23.py.
+
+2026-10-28 - Direct message collection
+- Add View DMs for collecting checked one-to-one and group conversations back to a selected UTC date, or all available history when the date is blank.
+- Support optional author search with the DM date cutoff, attachment downloads, incremental checks, deletion verification and saved-message context navigation.
+- Keep DM databases, downloads and exports separate for each connected account and retain independent server/DM collection settings.
+- Release executable rebuilt and all four native suites passed, including DM date boundaries, account isolation, deletion safeguards and UI navigation; build-helper checks passed with the Windows symlink-privilege check skipped. Live Discord DM collection remains to be verified.
+
+2026-10-26 - Collect user messages through Discord search
+- Use Discord's author/channel search to collect only matching user results instead of scanning every channel message.
+- Page backward by message ID to cover large result sets, retain attachment reuse and ordinary checkpoints, and report search-result progress.
+- Keep indexing delays and incomplete searches distinct from completion; verify missing saved messages separately before flagging deletion.
+- Release build and all three automated suites passed, including 10,001 search results, parent/thread scope, indexing retries, attachment reuse and deletion safety; live Discord author search remains to be verified.
+
+2026-10-26 - Collect messages by user ID
+- Add an optional User ID/member mention field to collect that user's full accessible history from checked channels, with matching attachment downloads and author-scoped deletion checks.
+- Preserve normal channel checkpoints and other users' saved messages; entering a user disables the date/incremental controls until cleared.
+- Filter saved messages and JSON/TXT exports by exact user ID, remember the field, and clear it when double-clicking a message to view the full conversation.
+- Release executable rebuilt and all three automated suites passed, including user-specific collection and message context navigation UI checks; live Discord user collection remains to be verified.
+
+2026-10-26 - Open message search results in context
+- Double-click a saved message to clear message filters and jump to its page in the full saved channel or thread history, with the message selected and visible.
+- Reveal hidden channels or threads while preserving collection checkmarks; Previous/Next continues through the surrounding conversation.
+- App compilation and database suites passed, including page-seven and boundary cases. The UI suite timed out during Windows control creation; the older UI test executable showed the same slowdown, so UI acceptance remains unverified.
+
+2026-10-16 - Compact app layout
+- Remove the in-app title and subtitle, move the tabs and controls to the top, and reclaim 79 pixels of vertical space for the server, member and message lists.
+
+2026-10-16 - Build launcher v0.02
+- Match XA builders with numbered timed stages, blue headings, green successes, orange warnings and red errors; keep logs and redirected output plain.
+- Add verified timestamped source backups with SHA-256 manifests and incremental documentation backups; retain removed documents, preserve private build inputs and stop compilation on backup failure.
+- Add --dry-run preview while retaining the Release x64 build, automatic native tests, --jobs, --skip-tests, --no-pause and persistent failure logs.
+- Verified a complete build and all three native suites, plus 10 passing build-support checks; one symlink check skipped for Windows privilege restrictions (junction rejection passed).
+- Backup: backups/1.build - 2026-10-16_14-03-01.py
+
+2026-10-16 - Deleted message verification
+- Fall back to history around a missing message when the individual lookup returns HTTP 403, allowing readable user-session history to confirm deletion and populate Deleted only.
+- Keep empty, inaccessible, malformed or cancelled fallback checks inconclusive and preserve saved content.
+- Release build and all three automated suites passed; live Discord deletion recheck remains to be verified.
+
+Channel search: filter by name or ID in View Channels; preserve hidden checked channels for collection; Select all applies to visible results and Clear all clears every selection.
+
+2026-10-07 - Channel messages, downloads and detection templates
+- Add View Channels with account/server selection, channel checkboxes, optional active/archived thread discovery, From date, Check since and Check for deletion.
+- Save message-ID-keyed history and per-account/channel completed ranges in a separate SQLite database; preserve progress on cancellation and retain deleted-message copies only after explicit Unknown Message verification.
+- Add picture/ZIP/TXT/LUA/JSON/PY/other-file filters, 10 MiB default and streamed download limits, safe attachment paths and reuse of successfully downloaded attachment IDs.
+- Add saved message search, pagination, author/text/details, Keep/Dismiss review and streaming filtered JSON/TXT exports.
+- Align editable detection templates with XA DevHub's 73 default weighted patterns, anchors, suggestion/bug classification and 0.5 threshold; support Save + rescan.
+- Reference DiscordChatExporter's history paging, rate-limit handling and user-session thread search. Regular channel refresh avoids slower optional thread discovery.
+- All three automated suites passed. Aethertek Chat live test saved 523 messages and 46 files, incremental rerun added zero, full deletion recheck retained 523 unique messages with zero repeated downloads, and export contained 523 unique IDs. No messages were posted or deleted by the test. Full optional thread discovery was cancelled during a rate-limit wait; its pagination is covered by offline tests.
+
+2026-10-07 - Faster sequential sidebar paging
+- Replace the 1.2-second post-response delay with a 750 ms minimum interval between sidebar sends; count response time toward pacing.
+- Keep one page outstanding on the existing connection, including initial/fallback requests, and check cancellation while waiting.
+- Release build and native/UI checks passed. Actual collection speed and Discord response behavior remain live verification.
+
+2026-10-07 - Start member requests immediately after READY
+- Remove the startup wait for READY_SUPPLEMENTAL or a heartbeat acknowledgement; request the first member page on READY using the existing connection.
+- Keep heartbeat health checks, full-request fallback and sidebar pacing. Release build and native/UI tests passed; live startup latency remains user verification.
+
+2026-10-07 - Accessible role-gated member sidebars
+- Remove the everyone-role visibility requirement when choosing a member sidebar; retain the connected account's effective channel permissions and member denies.
+- Include coverage reason and expected member total in member-batch summaries.
+- Saved report showed an initial-cache-only result with no eligible public sidebar. Build and permission regression checks pass; retrying the affected server remains live verification.
+
+2026-10-07 - One connection per count batch
+- Read eligible selected server counts from a single Gateway READY response; remove count-batch per-server reconnections and five-second pauses.
+- Preserve age filtering, cancel-before-save behavior, saved roster data and existing counts when a server count is unavailable.
+- Member-list collection still uses one connection per server and reuses it for all member chunks and sidebar pages.
+- Release build and native/UI checks passed, including one mocked count call for multiple servers; live latency remains user verification.
+
+2026-10-07 - Scan age and leave-removal controls
+- Add persistent All/1/2/7/14/30-day scan filtering with independent roster and count timestamps, never-scanned inclusion and skipped-server totals.
+- Add Remove Server Leaves Yes/No, default No; Yes prunes absent members only from complete live rosters. Partial/count scans retain absent users.
+- Fit the controls beside a smaller progress bar; preserve manual refresh and batch cancellation.
+- Release build, age/removal/persistence tests, UI tests and visual inspection passed.
+
+2026-10-07 - Separate member-list and server-count scans
+- Rename Scan selected to Scan Member Lists and add Scan Server Counts for checked servers.
+- Count scans stop after the initial Gateway server response, without requesting roster chunks or sidebar ranges.
+- Persist reported totals and count timestamps separately from rosters; show sortable Server total and Count checked columns.
+- Preserve existing member records, observation dates, cancellation and sequential batch behavior.
+- Release build, database persistence and count-scan UI checks passed; authenticated count scans remain user verification.
+
+2026-10-07 - Dark tab bar
+- Paint the full tab background in the app theme, with a blue underline for the selected view; remove the white native tab strip.
+- Release build, native/UI checks and isolated visual verification passed.
+
+2026-10-07 - Large servers and server/member views
+- Remove rejection based on a server's advertised member count; retain a five-million received-member guard and session visibility limits.
+- Merge roster and connected-account sources into one row per server ID with unique tracked-member counts.
+- Add clickable server sorting, including numeric server IDs and tracked counts.
+- Add View Servers and View Members tabs with member search, sorting, 500-row pagination and cached membership details.
+- Release build, 62 native checks, tab/sorting/detail UI checks and isolated visual/search/scroll checks passed. Live large-server collection remains user verification.
+
+2026-10-07 - Selected-server batch scanning
+- Add server checkboxes, Select all, Clear all and Scan selected using the chosen connected account.
+- Preserve checks through filtering and table updates; deduplicate servers with multiple coverage rows.
+- Scan sequentially with a five-second pause between servers, save each result, show current server number and summarize outcomes.
+- Cancel stops the active scan and remaining queue; server-specific failures continue while Gateway/session failures stop the batch.
+- Build, 56 native checks, batch/cancel/checkbox UI checks, search/scroll checks and visual inspection passed; live batch verification remains user testing.
+
+2026-10-07 - Track partial member caches
+- Accept explicit complete:false imports and merge partial collection results into SQLite automatically, including received members saved on cancellation.
+- Preserve missing members on partial updates; complete snapshots still replace the roster and remove absent members.
+- Show Partial cache or Complete roster coverage and count unique cached members in Tracked.
+- Add per-member last-seen timestamps, backfill older databases and preserve unseen members' freshness dates during partial merges.
+- Release build, 56 native checks and cancellation/partial-merge UI checks passed.
+
+2026-10-07 - Fix collection stalled at the initial login cache
+- Distinguish initial READY members from requested roster chunks; resolve own member roles from merged login data and nested owner properties.
+- Wait for Gateway startup before requesting members; use visible public-channel member sidebar ranges when full roster access is unavailable or a healthy connection yields no chunks.
+- Respect account channel visibility, page only returned sidebar groups, pace requests and keep sidebar-only output partial.
+- Preserve manual collection, unlimited elapsed time, cancellation and complete-roster database safeguards.
+- Build, 49 native checks and collection progress/cancellation UI checks passed; authenticated sidebar behavior still needs the user's live test.
+
+2026-10-06 - Collection progress and cancellation
+- Add received/total member counts, elapsed time, progress bar and Cancel collection button.
+- Remove the one-minute collection deadline; retain transport errors and heartbeat failure detection.
+- Cancel interrupts Gateway receive, saves received data separately as partial, and never replaces the database roster. Closing the window also cancels collection.
+- Progress-only timer does not refresh the server list or reset scrolling.
+- Release build, 42 native checks, isolated progress/cancel/partial-export UI checks and search/scroll checks passed. Authenticated live cancellation remains user verification.
+
+2026-10-06 - v0.5: User Gateway member collection
+- Replace the bot-only REST roster endpoint with a native WinHTTP Gateway WebSocket using the selected user session.
+- Request only the selected server's member chunks, correlate nonce/server/chunk indexes, maintain heartbeats and bound collection to one minute.
+- Update the database only for complete, consistent responses; export partial data separately without replacing the saved roster.
+- Preserve manual refresh, server search, selected account and dark interface.
+- Release build, 39 native checks and isolated UI search/scroll checks passed. Live authenticated Gateway collection remains the user verification step.
+
+2026-10-06 - Archive the pre-C++ application
+- Move the earlier Python/web scripts, HTML page, PowerShell launcher, Python tests, caches and empty examples folder into a dated backups/legacy-python-web folder.
+- Verify moved files against SHA-256 hashes and retain an archive manifest.
+- Keep native source, resources, 1.build.py, executable, saved sessions and live data in place; update README archive references.
+
+2026-10-06 - Manual user-session member collection
+- Add Collect Member List for the selected server using the selected connected account.
+- Attempt paginated REST member-list access; user-session access may be denied by Discord and is not live-verified.
+- Save successful complete responses to SQLite and reports/member-list-SERVER_ID.json; show count and first 100 members in operation details.
+- Keep saved roster on denied, rate-limited, interrupted, duplicate or non-advancing responses; collect only on request.
+- Add offline pagination, persistence, denial, interruption, duplicate and empty-list checks.
+
+2026-10-06 - Server search and manual refresh
+- Add case-insensitive server name and server ID filtering.
+- Remove startup refresh and all periodic account/inbox refresh; old interval configuration is ignored.
+- Preserve scroll position and selected server across manual table updates when the rows still exist.
+- Native checks and isolated UI search/scroll verification passed. Complete member-roster collection is pending the connection method decision.
+
+2026-10-06 23:30 - v0.4: Dark interface and XD identity
+- Apply dark title bar, window, inputs, buttons, account selector, table and headers.
+- Embed a seven-size XD icon matching XA desktop apps; retain the icon generation source.
+- Rename Connect test account to Connect account and remove test wording from session prompts.
+- Keep account-only membership checks; no server roster collection added.
+- Move native demo generators into the test executable only; back up the live database, remove verified A/B/C synthetic records and archive their example JSON files.
+- User confirmed live account login and server listing. Release build, 28 native checks, isolated UI checks and visual inspection passed.
+- Replace the root executable after the running app closed; preserve saved sessions and real account memberships.
+Backup: backups/demo-cleanup-2026-10-06_23-27-58/members-before-cleanup.sqlite3
+
+2026-10-06 23:10 - v0.3: Remembered test-account sessions
+- Remove native demo buttons and synthetic preview IDs; preserve existing saved data.
+- Add masked session entry, Connect test account, Refresh servers and Forget account.
+- Cache optional remembered sessions with Windows DPAPI; refresh on startup and every five minutes by default.
+- Read connected accounts' own identity and paginated server memberships; replace each account's membership atomically after a complete response.
+- Keep failed refresh data until stale; prevent old imported rosters from restoring departed or forgotten account matches.
+- Add coverage labels, configuration and updated usage instructions.
+- Verification: Release build, 28 offline native checks and isolated native UI control checks passed. Live Discord authentication and membership refresh remain user testing; no live credentials used or messages sent.
+Backup: native/backups/core - 2026-10-06_23-02-27.cpp
+Backup: native/backups/core - 2026-10-06_23-02-27.h
+Backup: native/backups/app - 2026-10-06_23-02-27.cpp
+Backup: native/backups/tests - 2026-10-06_23-02-27.cpp
+Backup: backups/CMakeLists - 2026-10-06_23-02-27.txt
+
+2026-10-06 22:55:45 - Native build launcher
+- Add 1.build.py for CMake configuration, x64 Release compilation and native tests in one run.
+- Discover CMake, cap default parallelism at four jobs, save logs and keep double-clicked windows open.
+- Support --no-pause, --jobs and --skip-tests; preserve running processes and report build failures.
+- New build script; no previous file existed to back up.
+
+2026-10-06 22:45:23 - v0.2: Native Windows C++ application
+- Add standalone Windows executable with native import, inbox refresh, membership table and join preview controls.
+- Add Load A/B/C demo and Remove User 1 from A buttons; export previews directly from the app.
+- Preserve existing SQLite schema and snapshot hashes, dated replacement rules, stale-data filtering and member removal.
+- Statically link SQLite and the C++ runtime; no PowerShell, Python or browser required for the native application.
+- Release build and 17 native behavior checks passed; native demo/removal controls and SQLite effects verified in an isolated workspace.
+- Retain the earlier Python prototype as reference; native app does not connect to Discord or publish messages.
+Backup: native/backups/core - 2026-10-06_22-45-23.cpp
+Backup: native/backups/app - 2026-10-06_22-45-23.cpp
+Backup: native/backups/tests - 2026-10-06_22-45-23.cpp
+
+2026-10-06 22:09:56 - v0.1: Local test-server member lists
+- Add manual complete-snapshot uploads, current membership storage and shared-server join previews.
+- Replace each server roster atomically; remove absent users, reject old/conflicting snapshots and hide stale data.
+- Add a local browser workspace, periodic inbox refresh, CLI commands and an optional designated-test-server bot.
+- Include fresh A/B/C examples and isolated database/HTTP tests, including a 3,001-member roster.
+- Verification: 13 automated tests passed; real Edge browser upload, join preview, removal and automatic inbox refresh passed.
+- Discord event adapter verified with mocked joins and updated SQLite state; live Discord connection remains untested.
+- Initial creation; no existing project files were replaced.
+Backup: backups/member_lists - 2026-10-06_22-14-19.py
+Backup: backups/test_join_bot - 2026-10-06_22-14-19.py
+Backup: backups/make_demo - 2026-10-06_22-14-19.py

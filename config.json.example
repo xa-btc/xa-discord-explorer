@@ -1,0 +1,5 @@
+{
+  "database": "data/members.sqlite3",
+  "max_age_hours": 24,
+  "inbox": "inbox"
+}
